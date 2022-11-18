@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      Canvas {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        border: 2px solid #008cba;
+        cursor: crosshair;
+      }
+      Button {
+        background-color: #008cba;
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        font-size: 16px;
+        opacity: 0.6;
+        transition: 0.3s;
+        display: inline-block;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      Button:hover {
+        opacity: 1;
+      }
+      .centered {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+      .grid-container {
+        display: grid;
+        grid-template-columns: auto auto;
+      }
+      .grid-item {
+        width: 100%;
+      }
+      .prediction-text {
+        text-align: center;
+        color: rgb(56, 56, 56);
+        font-weight: 800;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+      }
+      #prediction {
+        font-size: 30px;
+      }
+    </style>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="centered">
+      <canvas width="350px" height="350px"></canvas>
+      <div class="grid-container">
+        <button class="grid-item" id="predict">Predict</button>
+        <button class="grid-item" id="reset" onclick="signaturePad.clear()">
+          Reset
+        </button>
+      </div>
+      <div class="prediction-text">
+        Prediction:
+        <div id="prediction">.</div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <script>
+      const canvas = document.querySelector("canvas");
+      const predictButton = document.getElementById("predict");
+      const resultDiv = document.getElementById("prediction");
+
+      function download(dataURL, filename) {
+        const blob = dataURLToBlob(dataURL);
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.style = "display: none";
+        a.href = url;
+        a.download = filename;
+
+        document.body.appendChild(a);
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      }
+
+      function dataURLToBlob(dataURL) {
+        // Code taken from https://github.com/ebidel/filer.js
+        const parts = dataURL.split(";base64,");
+        const contentType = parts[0].split(":")[1];
+        const raw = window.atob(parts[1]);
+        const rawLength = raw.length;
+        const uInt8Array = new Uint8Array(rawLength);
+
+        for (let i = 0; i < rawLength; ++i) {
+          uInt8Array[i] = raw.charCodeAt(i);
+        }
+
+        return new Blob([uInt8Array], { type: contentType });
+      }
+
+      async function uploadFile(blob) {
+        let formData = new FormData();
+        formData.append("file", blob);
+        return await fetch("/predict", {
+          method: "POST",
+          body: formData,
+        });
+      }
+
+      const signaturePad = new SignaturePad(canvas, {
+        minWidth: 15,
+        maxWidth: 15,
+        backgroundColor: "rgb(255, 255, 255)",
+      });
+
+      predictButton.addEventListener("click", async () => {
+        if (signaturePad.isEmpty()) {
+          alert("Signature is empty");
+        } else {
+          const dataURL = signaturePad.toDataURL("image/jpeg");
+          const blob = dataURLToBlob(dataURL);
+          const response = await uploadFile(blob);
+          const resultData = await response.json();
+          resultDiv.innerText = resultData.prediction;
+          // download(dataURL, "signature.jpg");
+        }
+      });
+    </script>
+  </body>
+</html>

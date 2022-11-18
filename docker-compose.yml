@@ -1,0 +1,22 @@
+
+version: '3'
+services:
+  tensorflow-notebook:
+      image: jupyter/tensorflow-notebook
+      volumes:
+        - ./tensorflow/work:/home/jovyan/work
+      ports:
+        - 8888:8888
+      container_name: jupyter_notebook
+  api:
+    container_name: fastapi
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./api
+    ports:
+      - 4000:80
+    volumes:
+      - ./api/app:/code/app
+      - ./models:/models
+# volumes:
+#   app:
