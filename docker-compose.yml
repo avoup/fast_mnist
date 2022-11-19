@@ -5,6 +5,7 @@ services:
       image: jupyter/tensorflow-notebook
       volumes:
         - ./tensorflow/work:/home/jovyan/work
+        - ./models:/models
       ports:
         - 8888:8888
       container_name: jupyter_notebook
@@ -17,6 +18,4 @@ services:
       - 4000:80
     volumes:
       - ./api/app:/code/app
-      - ./models:/models
-# volumes:
-#   app:
+      - ./models
