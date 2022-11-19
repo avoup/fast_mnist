@@ -29,7 +29,7 @@ def process_image(image):
 @app.post("/predict/")
 async def prediction(file: UploadFile = File(...)):
     # Load model
-    model = tf.keras.models.load_model('/models/mnist_model_cnn')
+    model = tf.keras.models.load_model('/code/models/mnist_model_cnn')
 
     # Get uploaded file extension
     extension = file.content_type.split('/')[1]
