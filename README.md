@@ -16,3 +16,13 @@ If you want to run only api use the following command:
 ```bash
 docker-compose up api
 ```
+
+## Heroku deployment
+### First time deployment
+Make sure you are in `api` directory
+- install heroku CLI
+- run `heroku login`
+- run `heroku create`
+- run `heroku container:login`
+- run `heroku container:push api --app <generated-app-name>`
+- run `heroku container:release api --app <generated-app-name>`
