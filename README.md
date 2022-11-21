@@ -3,6 +3,10 @@ Using Tensorflow on MNIST dataset
 
 Check out [Demo](http://54.226.143.71:8000/)
 
+<p align="center">
+  <img src="https://lh3.googleusercontent.com/pw/AL9nZEVV5IzJy7Udd0_TFJhFkngVx4gCmS-s7N4EXSfDfLT215Y2w14mWif2aoN5kyO5n0DXxkb10-2bhd1xMioX-zrwM5KuGHGHuUVmfs_0jBFkL4AcObMqO5Q7u7eAHD7TVWah3MtXfnZn805q4i0U3lca=s467-no?authuser=0">
+</p>
+
 ## Getting Started
 In your terminal type:
 
@@ -13,7 +17,7 @@ git clone https://github.com/avoup/fast_mnist myproject
 # Change directory
 cd myproject
 
-# Install NPM dependencies
+# Run project
 docker-compose up
 ```
 
@@ -28,4 +32,9 @@ jupyter/tensorflow-notebook image is 4.5GB.
 If you want to run only api, without jupyter-notebook, use the following command:
 ```bash
 docker-compose up api
+```
+
+To run without docker go to `./api` directory and run:
+```bash
+pip install -r ./requirements.txt
 ```
